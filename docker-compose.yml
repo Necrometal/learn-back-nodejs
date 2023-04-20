@@ -2,12 +2,34 @@ version: '3.0'
 
 services: 
   # Mongodb
-  mongo_db: 
-    container_name: db_container
-    image: mongo:latest
+  mongo: 
+    container_name: mongo
+    image: mongo
     # restart: always
     volumes: 
-      - mongo_db:/data/db
+      - mongo:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: learn-back-node-js
+    restart: unless-stopped
+    ports:
+      - 27018:27017
+
+  mongo_express:
+    container_name: mongo_express_container
+    image: mongo-express
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_URL: mongodb://root:password@mongo:27017/
+      # - ME_CONFIG_BASICAUTH_USERNAME=mexpress
+      # - ME_CONFIG_BASICAUTH_PASSWORD=mexpress
+    ports: 
+      - 8081:8081
+    depends_on:
+      - mongo
+    restart: unless-stopped
 
   api: 
     build: .
@@ -15,13 +37,13 @@ services:
     ports: 
       - 8080:8080
     environment:
-      DB: mongodb://mongo_db:27017/learn-back-node-js
+      DB: mongodb://root:password@mongo:27017/learn-back-node-js
       JWT_KEY: pO3WHCrzfY4aHJhmRH7ru8O6PkrDTRkK
     depends_on:
-      - mongo_db
+      - mongo
     volumes:
       - ./:/usr/src/app
 volumes:
-  mongo_db: {}
+  mongo: {}
 
 
