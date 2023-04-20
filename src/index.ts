@@ -16,7 +16,7 @@ app.use(cookieParser());
 
 // using route
 app.use('/', home)
-app.use('/user', user)
+// app.use('/user', user)
 
 app.use((req, res, next) => {
   next(createError(404, 'Api not found'));

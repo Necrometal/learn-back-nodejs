@@ -1,0 +1,27 @@
+version: '3.0'
+
+services: 
+  # Mongodb
+  mongo_db: 
+    container_name: db_container
+    image: mongo:latest
+    # restart: always
+    volumes: 
+      - mongo_db:/data/db
+
+  api: 
+    build: .
+    restart: always
+    ports: 
+      - 8080:8080
+    environment:
+      DB: mongodb://mongo_db:27017/learn-back-node-js
+      JWT_KEY: pO3WHCrzfY4aHJhmRH7ru8O6PkrDTRkK
+    depends_on:
+      - mongo_db
+    volumes:
+      - ./:/usr/src/app
+volumes:
+  mongo_db: {}
+
+
